@@ -1,0 +1,6 @@
+auto_ml/data/
+auto_ml/train_test_splited/
+auto_ml/.idea/
+auto_ml/.ipynb_checkpoints/
+auto_ml/__pycache__/
+
