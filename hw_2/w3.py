@@ -3,9 +3,8 @@ import numpy as np
 import math
 
 
-
 class MyLinearRegressor:
-    def __init__(self, d, target, alpha=0.0003):
+    def __init__(self, d, target, alpha=0.003):
         self.data = d
         self.target = target
         self.alpha = alpha
@@ -14,23 +13,14 @@ class MyLinearRegressor:
         self.W = [1] * self.ncols
 
     def predict(self, x):
-        res = 0
-        for w_, x_ in zip(self.W, x):
-            res += w_ * x_
-        return res
+        return (x * self.W).sum(axis=1)
 
-    def rmse(self):
-        rmse = 0
-        for i in range(self.m):
-            rmse += math.pow(self.predict(self.data.iloc[i].to_list()) - self.target[i], 2)
-        rmse = math.sqrt(rmse / (2 * self.m))
-        return rmse
+    def mse(self):
+        return sum((self.predict(self.data.values) - self.target) ** 2) / self.m
 
     def derivative(self, i):
-        res = 0
-        for r in range(self.m):
-            res += (self.predict(self.data.iloc[r].to_list()) - self.target[r]) * self.data.iloc[r, i]
-        return res / self.m
+        # derivative of mean squared error function
+        return sum((self.predict(self.data) - self.target) * self.data.iloc[:, i]) / self.m
 
     def fit(self, num_of_iterations=100):
         for i in range(num_of_iterations):
@@ -38,10 +28,9 @@ class MyLinearRegressor:
             new_weights = []
             for j in range(self.ncols):
                 new_weights.append(self.W[j] - self.alpha * self.derivative(j))
-                # self.W[j] = self.W[j] - self.alpha * self.derivative(j)
+
             self.W = new_weights
         print(self.W)
-
 
 
 
