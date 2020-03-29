@@ -5,7 +5,7 @@ class MyLinearRegressor:
         self.alpha = alpha
         self.m = self.data.shape[0]
         self.ncols = self.data.shape[1]
-        self.W = self.w_ = np.random.normal(loc= 0.0, scale = 0.01, size = X.shape[1])
+        self.W = self.w_ = np.random.normal(loc= 0.0, scale = 0.01, size = self.ncols)
         print("initial weights: ", self.W)
 
     def predict(self, X):
