@@ -1,80 +1,57 @@
-import pandas as pd
-import numpy as np
-import math
-
-
 class MyLinearRegressor:
     def __init__(self, d, target, alpha=0.003):
         self.data = d
         self.target = target
         self.alpha = alpha
-        self.m = d.shape[0]
-        self.ncols = d.shape[1]
-        self.W = [1] * self.ncols
+        self.m = self.data.shape[0]
+        self.ncols = self.data.shape[1]
+        self.W = self.w_ = np.random.normal(loc= 0.0, scale = 0.01, size = X.shape[1])
+        print("initial weights: ", self.W)
 
-    def predict(self, x):
-        return (x * self.W).sum(axis=1)
+    def predict(self, X):
+        return X.dot(self.W)
 
     def mse(self):
-        return sum((self.predict(self.data.values) - self.target) ** 2) / self.m
+        return sum((self.predict(self.data) - self.target) ** 2) / self.m
 
-    def derivative(self, i):
+    def derivative(self):
         # derivative of mean squared error function
-        return sum((self.predict(self.data) - self.target) * self.data.iloc[:, i]) / self.m
+        errors = self.predict(self.data) - self.target
+        return self.data.T.dot(errors)
 
     def fit(self, num_of_iterations=100):
         for i in range(num_of_iterations):
-            # for updating weights simultaneously
-            new_weights = []
-            for j in range(self.ncols):
-                new_weights.append(self.W[j] - self.alpha * self.derivative(j))
-
-            self.W = new_weights
-        print(self.W)
+            self.W -= self.alpha * self.derivative()
+        print("final weights:   ", self.W)
 
 
 
-dataset_path = "data\\sberbank_russian_housing_market_price_doc.csv"
-
-data = pd.read_csv(dataset_path)
-data.fillna(value=data.mean(), inplace=True)
-target = data.price_doc
-data = data[['floor', 'num_room', 'kitch_sq', 'material']]
-
-opstimizer = MyLinearRegressor(data, target)
-optimizer.fit()
 
 
-# g - is the function that we want to learn from our sample that has a general structure and loss function
-# ------------------------------------- specify the general structure
-# the exact type of true function
-# g = x1_*w1_ + x2_*w2_ + x3_*w3_ + x4_*w4_  # model 1
-# oversimplify the model
-# g = x1_*w1_ + x3_*w3_ + x4_*w4_ # model 2
-# g = x1_*w1_ + x4_*w4_ # model 3
-# overcomplicate the model
-# x1_sq = x1**2
-# x2_sq = x2**2
-# g = x1_*w1_ + x2_*w2_ + x3_*w3_ + x4_*w4_ + x1_sq*w5_ # model 4
-# g = x1_*w1_ + x2_*w2_ + x3_*w3_ + x4_*w4_ + x1_sq*w5_ + x2_sq_*w6_ # model 5
+bias = np.ones(100)
+x1 = np.random.randint(low=1, high=20, size=100)
+x2 = np.random.randint(low=1, high=20, size=100)
+x3 = np.random.randint(low=1, high=20, size=100)
+x4 = np.random.randint(low=1, high=20, size=100)
+
+w0 = 1
+w1 = 7
+w2 = 3
+w3 = 9
+w4 = 6
+
+X = np.column_stack((bias, x1, x2, x3, x4))
+
+# def standardize(X):
+#     X_std = X.copy()
+#     for i in range(1, X.shape[1]):
+#         X_std[:, i] = (X_std[:, i] - X_std[:, i].mean()) / X_std[:, i].std()
+#     return X_std
+
+# X_std = standardize(X)
+y = w0 + w1*x1 + w2*x2 + w3*x3 + w4*x4
 
 
-# end of the code ------------
-
-# define the gradient descent optimizator for multivariate linear regression problem
-# ------------ your code goes here
-
-
-
-# end of the code ------------
-
-# model 2
-# train the models, for each of them you should get the model's rmse and parameter values (compare them with the true parameter values)
-# ------------ your code goes here
-# model 1
-# model 3
-# model 4
-# model 5
-# end of the code ------------
-
-# we will discuss the final, model validation part, during the upcoming workshops
+lr = MyLinearRegressor(X, y, alpha = 0.00004)
+lr.fit(num_of_iterations=4000)
+print("actual weights:  ", [w0, w1, w2, w3, w4])
