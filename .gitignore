@@ -9,3 +9,4 @@ hw_3_logistic/.ipynb_checkpoints/
 hw_3_logistic/__pycache__/
 hw_3_logistic/logistic_reg.ipynb
 qeuestions.txt
+*.pyc
